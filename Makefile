@@ -4,6 +4,9 @@ SHELL := /bin/bash
 
 ENV_FILE := .env
 
+include $(ENV_FILE)
+export
+
 help:
 	@echo "FitShare Makefile"
 	@echo ""
@@ -42,8 +45,9 @@ db-reset:
 	if [ -n "$$DB_PASSWORD" ]; then \
 		mysql -h "$${DB_HOST:-localhost}" -u "$${DB_USER:-root}" -p"$$DB_PASSWORD" < database/reset.sql; \
 	else \
-		mysql -h "$${DB_HOST:-localhost}" -u "$${DB_USER:-root}" -p < database/reset.sql; \
+		mysql -h "$${DB_HOST:-localhost}" -u "$${DB_USER:-root}" < database/reset.sql; \
 	fi
+	@echo "Databse successfully reset."
 
 db-schema:
 	@if [ ! -f "$(ENV_FILE)" ]; then echo "Error: $(ENV_FILE) not found."; exit 1; fi
@@ -51,8 +55,9 @@ db-schema:
 	if [ -n "$$DB_PASSWORD" ]; then \
 		mysql -h "$${DB_HOST:-localhost}" -u "$${DB_USER:-root}" -p"$$DB_PASSWORD" < database/schema.sql; \
 	else \
-		mysql -h "$${DB_HOST:-localhost}" -u "$${DB_USER:-root}" -p < database/schema.sql; \
+		mysql -h "$${DB_HOST:-localhost}" -u "$${DB_USER:-root}" < database/schema.sql; \
 	fi
+	@echo "Databse successfully built."
 
 db-seed:
 	@if [ ! -f "$(ENV_FILE)" ]; then echo "Error: $(ENV_FILE) not found."; exit 1; fi
@@ -60,11 +65,12 @@ db-seed:
 	if [ -n "$$DB_PASSWORD" ]; then \
 		mysql -h "$${DB_HOST:-localhost}" -u "$${DB_USER:-root}" -p"$$DB_PASSWORD" < database/seed.sql; \
 	else \
-		mysql -h "$${DB_HOST:-localhost}" -u "$${DB_USER:-root}" -p < database/seed.sql; \
+		mysql -h "$${DB_HOST:-localhost}" -u "$${DB_USER:-root}" < database/seed.sql; \
 	fi
+	@echo "Databse successfully populated."
 
 db-setup: db-reset db-schema db-seed
-	@echo "Database setup complete. Astonishingly, the tables now exist."
+	@echo "Database setup complete."
 
 setup: install secret db-setup
 	@echo "Project setup complete. Run: make start"
