@@ -1,6 +1,6 @@
 This backend currently returns JSON API responses.
 
-For the final project, you can either:
+For the final project, we can either:
 1. Build frontend pages separately and call this API, or
 2. Add EJS templates here and render them from controllers.
 
